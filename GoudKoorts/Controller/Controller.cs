@@ -11,7 +11,7 @@ namespace GoudKoorts
     {
         private readonly OutputView _outputView;
         private readonly InputView _inputView;
-        private static readonly int COUNTDOWN_SECONDS = 60;
+        private static readonly float COUNTDOWN_SECONDS = 60;
         private GoudKoorts.Model.GoudKoorts _goudKoorts;
         private static Task _countdown;
 
@@ -38,9 +38,9 @@ namespace GoudKoorts
 
         }
 
-        public static Task DoActionAfter(int delaySeconds, Action action)
+        public static Task DoActionAfter(float delaySeconds, Action action)
         {
-            return Task.Delay((delaySeconds * 1000)).ContinueWith(_ => action());
+            return Task.Delay((int) (delaySeconds * 1000)).ContinueWith(_ => action());
         }
     }
 }
