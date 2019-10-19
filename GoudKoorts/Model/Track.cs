@@ -15,6 +15,11 @@ namespace GoudKoorts.Model
             return '-';
         }
 
+        public Orientation GetOrientation()
+        {
+            return _orientation;
+        }
+
         private bool HasCart()
         {
             return _cart == null;

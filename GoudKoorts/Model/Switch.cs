@@ -6,6 +6,11 @@ namespace GoudKoorts.Model
 {
     class Switch: Track
     {
+        public void SwitchTrack(Orientation orientation)
+        {
+            _orientation = orientation;
+        }
+
         public override char GetChar()
         {
             if (_direction == Direction.LEFT)

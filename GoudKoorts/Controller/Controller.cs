@@ -21,12 +21,22 @@ namespace GoudKoorts
             _outputView = new OutputView();
             _inputView = new InputView();
             _goudKoorts = new Model.GoudKoorts();
+            _goudKoorts.State = GameState.SWITCHING;
         }
 
         public void Start()
         {
             // Start the countdown.
             _countdown = DoActionAfter(COUNTDOWN_SECONDS, () => RunTrains());
+
+            // While the game is in "Switching" mode, allow the player to open/close Switches.
+            while(_goudKoorts.State == GameState.SWITCHING)
+            {
+                var input = _inputView.GetInput();
+                Console.WriteLine(input.ToString());
+
+                
+            }
         }
 
 
@@ -35,7 +45,6 @@ namespace GoudKoorts
         {
             // Set the game to running, no handling possible.
             _goudKoorts.State = GameState.RUNNING;
-
         }
 
         public static Task DoActionAfter(float delaySeconds, Action action)
