@@ -1,0 +1,3 @@
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\obj\Debug\netcoreapp3.0\GoudKoorts.csprojAssemblyReference.cache
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\obj\Debug\netcoreapp3.0\GoudKoorts.AssemblyInfoInputs.cache
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\obj\Debug\netcoreapp3.0\GoudKoorts.AssemblyInfo.cs
