@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace GoudKoorts
 {
@@ -6,7 +6,9 @@ namespace GoudKoorts
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var controller = new Controller();
+            controller.Start();
+            Console.ReadLine();
         }
     }
 }

@@ -1,3 +1,11 @@
 C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\obj\Debug\netcoreapp3.0\GoudKoorts.csprojAssemblyReference.cache
 C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\obj\Debug\netcoreapp3.0\GoudKoorts.AssemblyInfoInputs.cache
 C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\obj\Debug\netcoreapp3.0\GoudKoorts.AssemblyInfo.cs
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\bin\Debug\netcoreapp3.0\GoudKoorts.exe
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\bin\Debug\netcoreapp3.0\GoudKoorts.deps.json
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\bin\Debug\netcoreapp3.0\GoudKoorts.runtimeconfig.json
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\bin\Debug\netcoreapp3.0\GoudKoorts.runtimeconfig.dev.json
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\bin\Debug\netcoreapp3.0\GoudKoorts.dll
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\bin\Debug\netcoreapp3.0\GoudKoorts.pdb
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\obj\Debug\netcoreapp3.0\GoudKoorts.dll
+C:\Users\Sascha\source\repos\GoudKoorts\GoudKoorts\obj\Debug\netcoreapp3.0\GoudKoorts.pdb
