@@ -7,6 +7,7 @@ namespace GoudKoorts.Model
     public enum Orientation
     {
         UP,
-        DOWN
+        DOWN,
+        STRAIGHT
     }
 }

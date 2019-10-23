@@ -7,6 +7,8 @@ namespace GoudKoorts.Model
     public enum Direction
     {
         LEFT, 
-        RIGHT
+        RIGHT,
+        UP,
+        DOWN
     }
 }

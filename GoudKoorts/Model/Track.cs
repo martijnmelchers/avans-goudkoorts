@@ -6,10 +6,15 @@ namespace GoudKoorts.Model
 {
     class Track : PlacableObject
     {
-        protected Orientation _orientation;
         protected Direction _direction;
 
         protected Cart _cart;
+
+        public Track(Direction dir)
+        {
+            _direction = dir;
+        }
+
         public override char GetChar()
         {
             return '-';
@@ -17,7 +22,7 @@ namespace GoudKoorts.Model
 
         public Orientation GetOrientation()
         {
-            return _orientation;
+            return Orientation.UP;
         }
 
         private bool HasCart()

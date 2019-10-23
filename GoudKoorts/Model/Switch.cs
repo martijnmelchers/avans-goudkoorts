@@ -6,26 +6,16 @@ namespace GoudKoorts.Model
 {
     class Switch: Track
     {
+
+        public Switch():base(Direction.RIGHT) { }
         public void SwitchTrack(Orientation orientation)
         {
-            _orientation = orientation;
+            return;
         }
 
         public override char GetChar()
         {
-            if (_direction == Direction.LEFT)
-            {
-                if (_orientation == Orientation.UP)
-                    return '\\';
-
-                return '/';
-            }
-            else
-            {
-                if (_orientation == Orientation.UP)
-                    return '/';
-                return '\\';
-            }
+            return '|';
         }
     }
 }

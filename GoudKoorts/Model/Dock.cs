@@ -6,6 +6,11 @@ namespace GoudKoorts.Model
 {
     class Dock : Instantiator
     {
+        public Dock()
+        {
+
+        }
+
         public override char GetChar()
         {
             return 'D';

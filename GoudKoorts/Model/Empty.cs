@@ -4,11 +4,11 @@ using System.Text;
 
 namespace GoudKoorts.Model
 {
-    class Brake : Track
+    class Empty : PlacableObject
     {
-        public Brake(Direction dir): base(dir)
+        public override char GetChar()
         {
-
+            return ' ';
         }
     }
 }
