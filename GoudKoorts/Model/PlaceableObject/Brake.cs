@@ -4,8 +4,10 @@ using System.Text;
 
 namespace GoudKoorts.Model
 {
-    public class Vehicle
+    class Brake : Track
     {
-        public FillState FillState { get; set; }
+        public Brake(Direction dir): base(dir)
+        {
+        }
     }
 }

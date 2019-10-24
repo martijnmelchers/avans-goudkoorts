@@ -5,7 +5,7 @@ namespace GoudKoorts.View
 {
     class InputView
     {
-        public ConsoleKey GetInput()
+        public int GetInput()
         {
             var validInput = false;
             ConsoleKey key = new ConsoleKey();
@@ -28,7 +28,9 @@ namespace GoudKoorts.View
                         continue;
                 }
             }
-            return key;
+
+
+            return int.Parse(key.ToString().Replace("D","")) -1 ;
         }
     }
 }

@@ -4,11 +4,10 @@ using System.Text;
 
 namespace GoudKoorts.Model
 {
-    class Brake : Track
+    public enum FillState
     {
-        public Brake(Direction dir): base(dir)
-        {
-
-        }
+        EMPTY,
+        FILLED,
+        FULL
     }
 }

@@ -10,11 +10,12 @@ namespace GoudKoorts.Model
         // Is it allowed to switch?
         public GameState State { get; set; }
         // Collection of all the switches on the "Board"
-        private List<Switch> _switches;
+        private List<Switch> _switches = new List<Switch>();
 
-        private List<Instantiator> _instantiators;
+        private List<Instantiator> _instantiators = new List<Instantiator>();
 
         private PlacableObject[,] Grid;
+
 
         public GoudKoorts()
         {
@@ -25,99 +26,123 @@ namespace GoudKoorts.Model
         // Laad de standaard gedefiniëerde map.
         private void LoadDemoList()
         {
-            /*Origin = new Track(Direction.LEFT, Orientation.STRAIGHT);
-
-            // Generates 9 tracks and returns the last one.
-            var tracks = GenerateTrack(ref Origin, 9, Direction.RIGHT, Direction.LEFT);
-
-            var dock1 = new Dock();
-            tracks.POAbove = dock1;
-
-            var track = new Track(Direction.LEFT);
-            tracks.PORight = track;
-
-            var trackNext = new Track(Direction.UP);
-            track.PORight = trackNext;
-
-            track = new Track(Direction.UP);
-            trackNext.POAbove = track;
-
-            trackNext = new Track(Direction.UP);
-            track.POAbove = trackNext;
-
-            track = new Track(Direction.UP);
-            trackNext.POAbove = track;*/
-
             // Initialize the data, so we can link them later on.
             List<List<PlacableObject>> columns = new List<List<PlacableObject>>
             {
                 new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Dock(), new Empty(), new Empty() },
-                new List<PlacableObject>{new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.UP)},
+                new List<PlacableObject>{new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT)},
                 new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Track(Direction.UP) },
-                new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.DOWN),new Empty(),new Track(Direction.UP),new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.DOWN),new Empty(),new Track(Direction.UP)},
-                new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Switch(), new Track(Direction.RIGHT), new Switch(), new Empty(), new Empty(), new Empty(), new Switch(), new Track(Direction.RIGHT), new Track(Direction.UP) },
-                new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.UP),new Empty(),new Track(Direction.DOWN), new Track(Direction.DOWN), new Empty(), new Track(Direction.UP), new Track(Direction.UP),new Empty(),new Empty()},
-                new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Switch(), new Track(Direction.RIGHT), new Switch(), new Empty(), new Empty(), new Empty()},
+                new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.DOWN),new Empty(),new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.DOWN),new Empty(),new Track(Direction.UP)},
+                new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Switch(Direction.LEFT), new Track(Direction.RIGHT), new Switch(), new Empty(), new Empty(), new Empty(), new Switch(Direction.LEFT), new Track(Direction.RIGHT), new Track(Direction.UP) },
+                new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.UP),new Empty(),new Track(Direction.DOWN), new Empty(), new Empty(), new Empty(), new Track(Direction.UP),new Empty(),new Empty()},
+                new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Track(Direction.DOWN),new Empty() , new Track(Direction.UP), new Empty(), new Empty(), new Empty()},
+                new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Switch(Direction.LEFT), new Track(Direction.RIGHT), new Switch(), new Empty(), new Empty(), new Empty()},
                 new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.UP), new Empty(), new Track(Direction.DOWN), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.DOWN) },
+                new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Track(Direction.DOWN) },
                 new List<PlacableObject>{ new Empty(), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Track(Direction.LEFT), new Track(Direction.LEFT), new Track(Direction.DOWN) },
             };
 
-
+            var testTrack = (Track)columns[8][1];
             //TODO: Link items (horizontally and vertically)
-
+            testTrack.SetCart(new Cart());
 
             Origin = columns[0][0];
             // Links items horizontally.
 
-            PlacableObject prev = null;
-            foreach(PlacableObject obj in columns[0])
-            { 
-                // Check if this is the first.
-                if(prev == null)
-                {
-                    prev = obj;
 
-                    if (Origin.PORight == null)
+            for(var i = 0; i < columns.Count; i++)
+            {
+                PlacableObject prev = null;
+
+                for (var j = 0; j < columns[i].Count; j++)
+                {
+
+                    if(i != 0)
                     {
-                        Origin.PORight = obj;
+                        var prevI = i - 1;
+                        columns[i][j].POAbove = columns[prevI][j];
+                        columns[prevI][j].PODown = columns[i][j];
+
+                        if(columns[i][j] is Switch)
+                        {
+                            _switches.Add((Switch) columns[i][j]);
+                        }
+
+                        if(columns[i][j] is Dock)
+                        {
+                            _instantiators.Add((Dock)columns[i][j]);
+                        }
+
+                        if (columns[i][j] is Warehouse)
+                        {
+                            _instantiators.Add((Warehouse)columns[i][j]);
+                        }
                     }
                 }
-                else
+
+
+                for (var j = 0; j < columns[i].Count; j++)
                 {
-                    obj.POLeft = prev;
-                    prev.PORight = obj;
+                    if(prev == null)
+                    {
+                        prev = columns[i][j];
+
+                        if(Origin.PORight == null)
+                        {
+                            Origin.PORight = columns[i][j];
+                        }
+                    }
+                    else
+                    {
+                        columns[i][j].POLeft = prev;
+                        prev.PORight = columns[i][j];
+                        prev = columns[i][j];
+
+
+                        //Link the rows.
+                    }
                 }
             }
 
-            Console.WriteLine(Origin.PORight.PORight.PORight.PORight.GetChar());
-            Console.ReadLine();
-        }
+            foreach(List<PlacableObject> column in columns)
+            {
+                PlacableObject prev = null;
+                foreach (PlacableObject obj in column)
+                {
+                    // Check if this is the first.
+                    if (prev == null)
+                    {
+                        prev = obj;
 
-        private void LoadDemo()
-        {
-           /* Grid = new PlacableObject[10,10] {
-                { new Track(Direction.LEFT, Orientation.STRAIGHT), new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Track(Direction.LEFT, Orientation.STRAIGHT), new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Track(Direction.LEFT, Orientation.STRAIGHT), new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Track(Direction.LEFT, Orientation.STRAIGHT), new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Warehouse(), new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Empty(), new Empty(),new Empty(),new Empty(),new Empty(),new Empty(),new Track(Direction.LEFT, Orientation.UP),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Warehouse(), new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Track(Direction.LEFT, Orientation.STRAIGHT), new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Warehouse(), new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.RIGHT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-                { new Empty(), new Empty(),new Empty(),new Empty(),new Empty(),new Empty(),new Track(Direction.LEFT, Orientation.UP),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT),new Track(Direction.LEFT, Orientation.STRAIGHT)},
-            };
-            */
+                        if (Origin.PORight == null)
+                        {
+                            Origin.PORight = obj;
+                        }
+                    }
+                    else
+                    {
+                        obj.POLeft = prev;
+                        prev.PORight = obj;
+
+                        prev = obj;
+                    }
+                }
+            }
+
+
+
+            Render();
+
         }
 
         // Returns the orientation the switch is switched to.
         public Orientation ToggleSwitch(int switchNum)
         {
-            var selSwitch = _switches[switchNum];
-            var orientation = selSwitch.GetOrientation() == Orientation.UP ? Orientation.DOWN : Orientation.UP;
+             var selSwitch = _switches[switchNum];
+             var direction = selSwitch.GetOrientation() == Orientation.UP ? Orientation.DOWN : Orientation.UP;
 
-            _switches[switchNum].SwitchTrack(orientation);
-            return orientation;
+             _switches[switchNum].SwitchTrack(direction);
+            return direction; 
         }
 
         private PlacableObject GenerateTrack(ref PlacableObject origin, int amount, Direction moveDir, Direction trackDir, Orientation or = Orientation.STRAIGHT)
@@ -151,6 +176,75 @@ namespace GoudKoorts.Model
             }
 
             return next;
+        }
+
+        public void MoveCarts()
+        {
+            int height = 11;
+            int width = 12;
+            PlacableObject originTile = Origin;
+            PlacableObject fieldBelow = originTile.PODown;
+            for (int index1 = 0; index1 < height; ++index1)
+            {
+
+                var prevMove = false;
+                for (int index2 = 0; index2 < width; ++index2)
+                {
+                    // Move cart in the direction of the track.
+                    if(originTile is Track)
+                    {
+                        var track = (Track)originTile;
+                        if (track.HasCart() && !prevMove)
+                        {
+                            track.MoveCart();
+                            prevMove = true;
+                        }
+                        if (prevMove)
+                        {
+                            prevMove = false;
+                        }
+                    }
+
+                    originTile = originTile.PORight;
+                }
+
+                originTile = fieldBelow;
+                if (fieldBelow != null)
+                    fieldBelow = originTile.PODown;
+            }
+        }
+
+        public void Render()
+        {
+            Console.Clear();
+            int height = 11;
+            int width = 12;
+            PlacableObject originTile = Origin;
+            PlacableObject fieldBelow = originTile.PODown;
+            for (int index1 = 0; index1 < height; ++index1)
+            {
+                for (int index2 = 0; index2 < width; ++index2)
+                {
+    
+                    if(originTile is Brake)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+
+                    if(originTile is Switch)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    Console.Write(originTile.GetChar());
+                    Console.ResetColor();
+                    originTile = originTile.PORight;
+                }
+                originTile = fieldBelow;
+                if (fieldBelow != null)
+                    fieldBelow = originTile.PODown;
+                Console.WriteLine();
+            }
+            Console.WriteLine("─────────────────────────────────────────────────────────────────────────");
         }
     }
 }

@@ -4,8 +4,10 @@ using System.Text;
 
 namespace GoudKoorts.Model
 {
-    public class Vehicle
+    public enum LevelState
     {
-        public FillState FillState { get; set; }
+        EASY,
+        MEDIUM,
+        HARD
     }
 }

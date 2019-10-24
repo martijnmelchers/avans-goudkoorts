@@ -8,7 +8,7 @@ namespace GoudKoorts.Model
     {
         public override char GetChar()
         {
-            throw new NotImplementedException();
+            return 'W';
         }
 
         protected override void Instantiate(Vehicle vehicle)

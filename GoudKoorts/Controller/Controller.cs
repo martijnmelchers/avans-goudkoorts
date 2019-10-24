@@ -11,7 +11,7 @@ namespace GoudKoorts
     {
         private readonly OutputView _outputView;
         private readonly InputView _inputView;
-        private static readonly float COUNTDOWN_SECONDS = 60;
+        private static readonly float COUNTDOWN_SECONDS = 10;
         private GoudKoorts.Model.GoudKoorts _goudKoorts;
         private static Task _countdown;
 
@@ -33,9 +33,8 @@ namespace GoudKoorts
             while(_goudKoorts.State == GameState.SWITCHING)
             {
                 var input = _inputView.GetInput();
-                Console.WriteLine(input.ToString());
-
-                
+                _goudKoorts.ToggleSwitch(input);
+                _goudKoorts.Render();
             }
         }
 
@@ -45,6 +44,17 @@ namespace GoudKoorts
         {
             // Set the game to running, no handling possible.
             _goudKoorts.State = GameState.RUNNING;
+
+            // Game loop.
+            while(_goudKoorts.State == GameState.RUNNING)
+            {
+                // Instantiate timers.
+                // Cart movement.
+                // Score
+                _goudKoorts.MoveCarts();
+                _goudKoorts.Render();
+                Thread.Sleep(1000);
+            }
         }
 
         public static Task DoActionAfter(float delaySeconds, Action action)
