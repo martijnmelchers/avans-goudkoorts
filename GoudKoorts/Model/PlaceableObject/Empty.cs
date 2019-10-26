@@ -6,7 +6,7 @@ namespace GoudKoorts.Model
 {
     class Empty : PlacableObject
     {
-        public override char GetChar()
+        public override char ToChar()
         {
             return ' ';
         }

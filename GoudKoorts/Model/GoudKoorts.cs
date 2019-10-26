@@ -1,3 +1,4 @@
+using GoudKoorts.Model.PlaceableObject;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +7,7 @@ namespace GoudKoorts.Model
 {
     public class GoudKoorts
     {
-        private PlacableObject Origin;
+        public PlacableObject Origin { get; private set; }
         // Is it allowed to switch?
         public GameState State { get; set; }
         // Collection of all the switches on the "Board"
@@ -15,10 +16,11 @@ namespace GoudKoorts.Model
         private List<Instantiator> _instantiators = new List<Instantiator>();
 
         private PlacableObject[,] Grid;
-
-
+        public int Score { get; private set; }
+        
         public GoudKoorts()
         {
+            Score = 0;
             //TODO: Create board (hard coded, linked list model)
             LoadDemoList();
         }
@@ -29,22 +31,20 @@ namespace GoudKoorts.Model
             // Initialize the data, so we can link them later on.
             List<List<PlacableObject>> columns = new List<List<PlacableObject>>
             {
+                new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Water(), new Empty(), new Empty() },
                 new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Dock(), new Empty(), new Empty() },
                 new List<PlacableObject>{new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT),new Track(Direction.LEFT)},
                 new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Track(Direction.UP) },
                 new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.DOWN),new Empty(),new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.DOWN),new Empty(),new Track(Direction.UP)},
                 new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Switch(Direction.LEFT), new Track(Direction.RIGHT), new Switch(), new Empty(), new Empty(), new Empty(), new Switch(Direction.LEFT), new Track(Direction.RIGHT), new Track(Direction.UP) },
-                new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.UP),new Empty(),new Track(Direction.DOWN), new Empty(), new Empty(), new Empty(), new Track(Direction.UP),new Empty(),new Empty()},
+                new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT),new Track(Direction.RIGHT),new Track(Direction.UP),new Empty(),new Track(Direction.RIGHT), new Track(Direction.DOWN), new Empty(), new Track(Direction.RIGHT), new Track(Direction.UP),new Empty(),new Empty()},
                 new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Track(Direction.DOWN),new Empty() , new Track(Direction.UP), new Empty(), new Empty(), new Empty()},
                 new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Switch(Direction.LEFT), new Track(Direction.RIGHT), new Switch(), new Empty(), new Empty(), new Empty()},
-                new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.UP), new Empty(), new Track(Direction.DOWN), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.DOWN) },
+                new List<PlacableObject>{new Warehouse(), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.UP), new Empty(), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.RIGHT), new Track(Direction.DOWN) },
                 new List<PlacableObject>{new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Track(Direction.DOWN) },
-                new List<PlacableObject>{ new Empty(), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Track(Direction.LEFT), new Track(Direction.LEFT), new Track(Direction.DOWN) },
+                new List<PlacableObject>{ new Empty(), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Brake(Direction.LEFT), new Track(Direction.LEFT), new Track(Direction.LEFT), new Track(Direction.LEFT) },
             };
 
-            var testTrack = (Track)columns[8][1];
-            //TODO: Link items (horizontally and vertically)
-            testTrack.SetCart(new Cart());
 
             Origin = columns[0][0];
             // Links items horizontally.
@@ -68,14 +68,9 @@ namespace GoudKoorts.Model
                             _switches.Add((Switch) columns[i][j]);
                         }
 
-                        if(columns[i][j] is Dock)
+                        if(columns[i][j] is Instantiator)
                         {
-                            _instantiators.Add((Dock)columns[i][j]);
-                        }
-
-                        if (columns[i][j] is Warehouse)
-                        {
-                            _instantiators.Add((Warehouse)columns[i][j]);
+                            _instantiators.Add((Instantiator)columns[i][j]);
                         }
                     }
                 }
@@ -130,9 +125,8 @@ namespace GoudKoorts.Model
             }
 
 
-
-            Render();
-
+            Instantiate();
+            //Render
         }
 
         // Returns the orientation the switch is switched to.
@@ -178,73 +172,84 @@ namespace GoudKoorts.Model
             return next;
         }
 
-        public void MoveCarts()
+        public bool MoveCartsFresh()
         {
-            int height = 11;
-            int width = 12;
-            PlacableObject originTile = Origin;
-            PlacableObject fieldBelow = originTile.PODown;
-            for (int index1 = 0; index1 < height; ++index1)
+            var origin = Origin;
+            while(origin != null)
             {
+                var next = origin;
 
-                var prevMove = false;
-                for (int index2 = 0; index2 < width; ++index2)
+                while (next != null)
                 {
+
+
+                    var moved = false;
                     // Move cart in the direction of the track.
-                    if(originTile is Track)
+                    if (next is Track)
                     {
-                        var track = (Track)originTile;
-                        if (track.HasCart() && !prevMove)
+                        var track = (Track)next;
+                        if (track.HasCart())
                         {
-                            track.MoveCart();
-                            prevMove = true;
-                        }
-                        if (prevMove)
-                        {
-                            prevMove = false;
+                            var noCollision = track.MoveCart();
+
+                            // When a collison happens on move return false.
+                            if (!noCollision)
+                            {
+                                return false;
+                            }
+
+                            moved = true;
                         }
                     }
 
-                    originTile = originTile.PORight;
+                    if (!moved)
+                    {
+                        next = next.PORight;
+                    }
+                    else
+                    {
+                        if(next.PORight == null)
+                        {
+                            next = null;
+                        }
+                        else
+                        {
+                            next = next.PORight.PORight;
+                        }
+                    }
                 }
 
-                originTile = fieldBelow;
-                if (fieldBelow != null)
-                    fieldBelow = originTile.PODown;
+                origin = origin.PODown;
             }
+
+            
+            return true;
         }
 
-        public void Render()
+        public int CalcScore()
         {
-            Console.Clear();
-            int height = 11;
-            int width = 12;
-            PlacableObject originTile = Origin;
-            PlacableObject fieldBelow = originTile.PODown;
-            for (int index1 = 0; index1 < height; ++index1)
+            int score = 0;
+            foreach(var instantiator in _instantiators)
             {
-                for (int index2 = 0; index2 < width; ++index2)
+                if(instantiator is Dock)
                 {
-    
-                    if(originTile is Brake)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                    }
-
-                    if(originTile is Switch)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
-                    Console.Write(originTile.GetChar());
-                    Console.ResetColor();
-                    originTile = originTile.PORight;
+                    var dock = (Dock)instantiator;
+                    score += (dock.LoadsTransfered / 8) * 10;
                 }
-                originTile = fieldBelow;
-                if (fieldBelow != null)
-                    fieldBelow = originTile.PODown;
-                Console.WriteLine();
             }
-            Console.WriteLine("─────────────────────────────────────────────────────────────────────────");
+
+            return score;
         }
+
+
+        public void Instantiate()
+        {
+            foreach(var instantiator in _instantiators)
+            {
+                instantiator.Instantiate();
+            }
+        }
+
+
     }
 }

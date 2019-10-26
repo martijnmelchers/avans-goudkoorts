@@ -11,6 +11,6 @@ namespace GoudKoorts.Model
         public PlacableObject POLeft { get; set; }
         public PlacableObject PODown { get; set; }
 
-        public abstract char GetChar();
+        public abstract char ToChar();
     }
 }

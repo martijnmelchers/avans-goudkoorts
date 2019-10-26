@@ -22,79 +22,11 @@ namespace GoudKoorts.Model
             return _orientation;
         }
 
-        public override char GetChar()
+        public override char ToChar()
         {
-
-
-            /* char icon = ' ';
-             switch (_direction)
-             {
-                 case Direction.LEFT:
-                 case Direction.RIGHT:
-                     icon = ' ';
-                     break;
-
-                 case Direction.UP:
-                     {
-
-                         if (HasCart())
-                         {
-                             return '8';
-                         }
-                         if (POLeft is Track)
-                         {
-                             var po = (Track)POLeft;
-
-                             if (po.GetDirection() == Direction.RIGHT)
-                             {
-                                 return '/';
-                             }
-                             else
-                             {
-                                 return '\\';
-                             }
-                         }
-                         else
-                         {
-                             return '/';
-                         }
-                     }
-                 case Direction.DOWN:
-                     {
-                         if (HasCart())
-                         {
-                             return '8';
-                         }
-
-                         if (POLeft is Track)
-                         {
-                             var po = (Track)POLeft;
-
-                             if (po.GetDirection() == Direction.RIGHT)
-                             {
-                                 return '\\';
-                             }
-                             else
-                             {
-                                 return '/';
-                             }
-                         }
-                         else
-                         {
-                             return '\\';
-                         }
-                     }
-
-                 default:
-                     break;
-             }
-
-
-             return icon;*/
-
             if (HasCart())
             {
-                return '8';
+                return _cart.ToChar();
             }
 
             if(_direction == Direction.RIGHT)

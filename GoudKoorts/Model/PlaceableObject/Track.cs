@@ -7,7 +7,6 @@ namespace GoudKoorts.Model
     class Track : PlacableObject
     {
         protected Direction _direction;
-
         protected Cart _cart;
 
         public Track(Direction dir)
@@ -15,12 +14,12 @@ namespace GoudKoorts.Model
             _direction = dir;
         }
 
-        public override char GetChar()
+        public override char ToChar()
         {
 
             if (HasCart())
             {
-                return '8';
+                return _cart.ToChar();
             }
 
             switch (_direction)
@@ -105,6 +104,7 @@ namespace GoudKoorts.Model
 
         public virtual bool MoveCart()
         {
+
             // Move the cart to the next track.
             
             Track nextTrack = null;
@@ -137,7 +137,14 @@ namespace GoudKoorts.Model
                 return true;
             }
 
-            if(nextTrack is Switch)
+            if (nextTrack.POAbove is Dock)
+            {
+                var dock = (Dock)nextTrack.POAbove;
+                _cart.TransferContents(dock);
+            }
+
+
+            if (nextTrack is Switch)
             {
                 // The next item is a switch, check if we can move through it.
                 var switchTrack = (Switch)nextTrack;
@@ -154,6 +161,7 @@ namespace GoudKoorts.Model
                 }
             }
 
+   
           
             var cart = _cart;
             var noCollision = nextTrack.SetCart(cart);

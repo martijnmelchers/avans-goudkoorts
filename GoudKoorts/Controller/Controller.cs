@@ -11,10 +11,13 @@ namespace GoudKoorts
     {
         private readonly OutputView _outputView;
         private readonly InputView _inputView;
-        private static readonly float COUNTDOWN_SECONDS = 10;
+        private float COUNTDOWN_SECONDS = 10;
         private GoudKoorts.Model.GoudKoorts _goudKoorts;
-        private static Task _countdown;
+        private Task _countdown;
+        private System.Timers.Timer _timer;
+        private bool _runGame = true;
 
+        private int _score = 0;
 
         public Controller()
         {
@@ -24,17 +27,37 @@ namespace GoudKoorts
             _goudKoorts.State = GameState.SWITCHING;
         }
 
+
         public void Start()
         {
+            _outputView.Render(_goudKoorts.Origin, _goudKoorts.CalcScore());
+
+            while (_runGame)
+            {
+                SwitchPhase();
+            }
+
+            // Show game over message.
+            _outputView.ShowGameOver(_score);
+        }
+
+        public void SwitchPhase()
+        {
+            _goudKoorts.State = GameState.SWITCHING;
+
+            COUNTDOWN_SECONDS = CalcSpeed();
             // Start the countdown.
             _countdown = DoActionAfter(COUNTDOWN_SECONDS, () => RunTrains());
 
             // While the game is in "Switching" mode, allow the player to open/close Switches.
             while(_goudKoorts.State == GameState.SWITCHING)
             {
-                var input = _inputView.GetInput();
-                _goudKoorts.ToggleSwitch(input);
-                _goudKoorts.Render();
+                if (_inputView.KeyAvailable())
+                {
+                    var input = _inputView.GetInput();
+                    _goudKoorts.ToggleSwitch(input);
+                    _outputView.Render(_goudKoorts.Origin, _goudKoorts.CalcScore());
+                }
             }
         }
 
@@ -45,16 +68,20 @@ namespace GoudKoorts
             // Set the game to running, no handling possible.
             _goudKoorts.State = GameState.RUNNING;
 
-            // Game loop.
-            while(_goudKoorts.State == GameState.RUNNING)
+            if(_goudKoorts.MoveCartsFresh() == false)
             {
-                // Instantiate timers.
-                // Cart movement.
-                // Score
-                _goudKoorts.MoveCarts();
-                _goudKoorts.Render();
-                Thread.Sleep(1000);
+                //End the game.
+                _runGame = false;
             }
+
+            _outputView.Render(_goudKoorts.Origin,  _goudKoorts.CalcScore());
+        }
+
+        // Calculate the speed at which the game will run.
+        private float CalcSpeed()
+        {
+            var speed = COUNTDOWN_SECONDS - (_score / 10) * 05;
+            return speed;
         }
 
         public static Task DoActionAfter(float delaySeconds, Action action)

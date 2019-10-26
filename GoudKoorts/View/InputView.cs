@@ -32,5 +32,10 @@ namespace GoudKoorts.View
 
             return int.Parse(key.ToString().Replace("D","")) -1 ;
         }
+
+        public bool KeyAvailable()
+        {
+            return Console.KeyAvailable;
+        }
     }
 }

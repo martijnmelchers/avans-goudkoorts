@@ -1,3 +1,4 @@
+using GoudKoorts.Model.PlaceableObject;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,19 +7,36 @@ namespace GoudKoorts.Model
 {
     class Dock : Instantiator
     {
+        private Ship _ship;
+        public int LoadsTransfered { get; private set; }
+
         public Dock()
         {
-
+            LoadsTransfered = 0;
         }
 
-        public override char GetChar()
+        public override char ToChar()
         {
             return 'D';
         }
 
-        protected override void Instantiate(Vehicle vehicle)
+        public override void Instantiate()
         {
-            throw new NotImplementedException();
+            var water = (Water)POAbove;
+            water.Instantiate();
+        }
+
+        public bool HasShip()
+        {
+            var water = (Water)POAbove;
+            return water.HasShip();
+        }
+
+        public void AddContents()
+        {
+            var water = (Water)POAbove;
+            water.GetShip().AddContents();
+            LoadsTransfered++;
         }
     }
 }

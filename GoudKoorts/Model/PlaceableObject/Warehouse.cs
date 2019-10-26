@@ -6,14 +6,23 @@ namespace GoudKoorts.Model
 {
     class Warehouse : Instantiator
     {
-        public override char GetChar()
+        public override char ToChar()
         {
             return 'W';
         }
 
-        protected override void Instantiate(Vehicle vehicle)
+        public override void Instantiate()
         {
-            throw new NotImplementedException();
+            if(PORight is Track)
+            {
+                var track = (Track)PORight;
+
+                track.SetCart(new Cart());
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }
