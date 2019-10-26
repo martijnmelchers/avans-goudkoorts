@@ -161,7 +161,13 @@ namespace GoudKoorts.Model
                 }
             }
 
-   
+            if(nextTrack is Brake)
+            {
+                nextTrack.SetCart(_cart);
+                _cart = null;
+
+                return true;
+            }
           
             var cart = _cart;
             var noCollision = nextTrack.SetCart(cart);

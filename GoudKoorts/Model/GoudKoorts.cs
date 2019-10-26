@@ -212,6 +212,7 @@ namespace GoudKoorts.Model
                         {
                             next = null;
                         }
+                  
                         else
                         {
                             next = next.PORight.PORight;

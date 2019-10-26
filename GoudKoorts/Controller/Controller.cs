@@ -17,7 +17,7 @@ namespace GoudKoorts
         private System.Timers.Timer _timer;
         private bool _runGame = true;
 
-        private int _score = 0;
+        private int _score = 100;
 
         public Controller()
         {
@@ -80,7 +80,13 @@ namespace GoudKoorts
         // Calculate the speed at which the game will run.
         private float CalcSpeed()
         {
-            var speed = COUNTDOWN_SECONDS - (_score / 10) * 05;
+            var speed = COUNTDOWN_SECONDS - (_score / 10) * (float)0.5;
+
+            if(speed < 1)
+            {
+                speed = 1;
+            }
+
             return speed;
         }
 
