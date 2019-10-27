@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoudKoorts.Model
 {
-    class Cart : Vehicle
+    public class Cart : Vehicle
     {
 
         public char ToChar()

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoudKoorts.Model
 {
-    class Track : PlacableObject
+    public class Track : PlacableObject
     {
         protected Direction _direction;
         protected Cart _cart;
@@ -83,7 +83,7 @@ namespace GoudKoorts.Model
             return _direction ;
         }
 
-        public bool SetCart(Cart cart)
+        public virtual bool SetCart(Cart cart)
         {
             if(_cart != null)
             {

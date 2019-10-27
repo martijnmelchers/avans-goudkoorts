@@ -16,8 +16,7 @@ namespace GoudKoorts
         private Task _countdown;
         private System.Timers.Timer _timer;
         private bool _runGame = true;
-
-        private int _score = 100;
+        private int _cycles = 0;
 
         public Controller()
         {
@@ -34,11 +33,16 @@ namespace GoudKoorts
 
             while (_runGame)
             {
+                if (_cycles % 4 == 0 && _cycles > 3)
+                {
+                    _goudKoorts.Instantiate();
+                }
+
                 SwitchPhase();
             }
 
             // Show game over message.
-            _outputView.ShowGameOver(_score);
+            _outputView.ShowGameOver(_goudKoorts.CalcScore());
         }
 
         public void SwitchPhase()
@@ -73,6 +77,7 @@ namespace GoudKoorts
                 //End the game.
                 _runGame = false;
             }
+            _cycles++;
 
             _outputView.Render(_goudKoorts.Origin,  _goudKoorts.CalcScore());
         }
@@ -80,7 +85,7 @@ namespace GoudKoorts
         // Calculate the speed at which the game will run.
         private float CalcSpeed()
         {
-            var speed = COUNTDOWN_SECONDS - (_score / 10) * (float)0.5;
+            var speed = COUNTDOWN_SECONDS - (_goudKoorts.CalcScore() / 10) * (float)0.5;
 
             if(speed < 1)
             {

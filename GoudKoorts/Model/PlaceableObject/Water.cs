@@ -29,6 +29,11 @@ namespace GoudKoorts.Model.PlaceableObject
             return _ship;
         }
 
+        public void RemoveShip()
+        {
+            _ship = null;
+        }
+
         public override void Instantiate()
         {
             _ship = new Ship();

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GoudKoorts.Model
 {
-    class Dock : Instantiator
+    public class Dock : Instantiator
     {
         private Ship _ship;
         public int LoadsTransfered { get; private set; }
@@ -36,6 +36,11 @@ namespace GoudKoorts.Model
         {
             var water = (Water)POAbove;
             water.GetShip().AddContents();
+            if(water.GetShip().FillState == FillState.FULL)
+            {
+                water.RemoveShip();
+            }
+            
             LoadsTransfered++;
         }
     }
